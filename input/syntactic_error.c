@@ -1,5 +1,5 @@
 /*
- * 2019 Spring Compiler Course Assignment 2 
+ * 2019 Spring Compiler Course Assignment 2
  */
 
 float c = 1.5;
@@ -16,6 +16,7 @@ int main() {
     int x;
     int i;
     int a = 5;
+    print("Hi");
 
     // syntactical error
     iff (a > 10) {
@@ -27,5 +28,5 @@ int main() {
     }
     print("Hello World");
 
-    return 0; 
+    return 0;
 }

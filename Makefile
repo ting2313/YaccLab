@@ -9,12 +9,11 @@ compile: scanner parser
 scanner:
 	lex ${FNAME}.l
 
-parser: 
+parser:
 	yacc ${YFLAG} ${FNAME}.y
 
 test: compile
-	./${EXE} < input/test.c
+	./${EXE} < input/syntactic_error.c
 
 clean:
 	rm ${EXE} y.tab* lex.* y.output
-

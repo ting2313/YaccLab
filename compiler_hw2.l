@@ -4,12 +4,20 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#define BUF_SIZE 100
+#define BUF_SIZE 1024
 extern YYSTYPE yylval; //YYSTYPE
 char buf[BUF_SIZE];
+char str[BUF_SIZE];
+extern int max_scope;
+extern void create_symbol();
+extern void insert_symbol();
+extern int lookup_symbol();
+extern void dump_symbol();
 
 /* This macro is used to record code line */
-#define CONCAT { strncat(buf, yytext, BUF_SIZE - strlen(buf) - 1); }
+#define CONCAT { strncat(buf, yytext, BUF_SIZE - strlen(buf) - 1);printf("%s",yytext); }
+#define STR {strncat(str, yytext, BUF_SIZE - strlen(str) - 1);}
+#define CLEAR { bzero(buf, sizeof(buf)); }
 %}
 
 /* Define regular expression label */
@@ -59,62 +67,62 @@ id			{letter}+({letter}|{digit})*
  /* Delimiters */
 "("		{CONCAT; return LB;}
 ")"		{CONCAT; return RB;}
-"{"		{CONCAT; return LCB;}
-"}"		{CONCAT; return RCB;}
+"{"		{CONCAT; max_scope++; return LCB;}
+"}"		{CONCAT; dump_symbol(); return RCB;}
 "["		{CONCAT; return LSB;}
 "]"		{CONCAT; return RSB;}
 ","		{CONCAT; return COMMA;}
 
  /* Print Keywords */
-"print"		{  }
+"print"		{CONCAT; return PRINT;}
 
  /* Condition and Loop Keywords */
-"if"		{  }
-"else"		{  }
-"for"		{  }
-"while"		{  }
+"if"		{CONCAT; return IF;}
+"else"		{CONCAT; return ELSE;}
+"for"		{CONCAT; return FOR;}
+"while"		{CONCAT; return WHILE;}
 
  /* Declaration Keywords */
-"void"		{CONCAT; return VOID;}
-"int"		{CONCAT; return INT;}
-"float"  	{CONCAT; return FLOAT;}
-"string"  	{CONCAT; return STRING;}
-"bool"  	{CONCAT; return BOOL;}
+"void"		{CONCAT; yylval.string="void"; return VOID;}
+"int"		{CONCAT; yylval.string="int"; return INT;}
+"float"  	{CONCAT; yylval.string="float"; return FLOAT;}
+"string"  	{CONCAT; yylval.string="string"; return STRING;}
+"bool"  	{CONCAT; yylval.string="bool"; return BOOL;}
 
  /* boolean Keywords */
-"true"      {  }
-"false"     {  }
+"true"      {CONCAT; return T;}
+"false"     {CONCAT; return F;}
 
-"return"    { }
+"return"    {CONCAT; return RETURN;}
 
  /* String Constant */
-\"				        { BEGIN STRING_STATE; }
-<STRING_STATE>\"		{ BEGIN INITIAL; }
-<STRING_STATE>[^"]*		{  }
+\"				        { bzero(str, sizeof(str));BEGIN STRING_STATE; }
+<STRING_STATE>\"		{ BEGIN INITIAL;yylval.string=strdup(str);return STR_CONST;}
+<STRING_STATE>[^"]*		{ STR;CONCAT; }
 
  /* Number Constant */
-{integer}	{CONCAT; return I_CONST;}
-{float}	    {CONCAT; return F_CONST;}
+{integer}	{CONCAT; yylval.i_val=atoi(yytext);return I_CONST;}
+{float}	    {CONCAT; yylval.f_val=atof(yytext);return F_CONST;}
 
  /* C type Comment */
-"/*"				{ BEGIN COMMENT; }
-<COMMENT>[^*\n]+	{  }
-<COMMENT>\n			{  }
-<COMMENT>"*"		{  }
-<COMMENT>"*/"		{ BEGIN INITIAL; }
+"/*"				{ CONCAT;BEGIN COMMENT; }
+<COMMENT>[^*\n]+	{ CONCAT;}
+<COMMENT>\n			{ CONCAT;}
+<COMMENT>"*"		{ CONCAT;}
+<COMMENT>"*/"		{ CONCAT;BEGIN INITIAL; }
 
  /* C++ type Comment */
-\/\/.*	{  }
+\/\/.*	{ CONCAT; }
 
  /* Variable ID */
- {id}       {CONCAT; return ID;}
+ {id}       {bzero(str, sizeof(str));CONCAT;STR;yylval.string=strdup(str);return ID;}
 
  /* others */
 
-[;]         {printf(";\n");CONCAT; return SEMICOLON;}
-[\n]        {printf("lex:%s\n", buf); bzero(buf, sizeof(buf));}
-[ \t]		{ } /* Ignore */
-[^ \t\n] 	{ } /* Ignore other charactor sets */
+[;]         {CONCAT; return SEMICOLON;}
+[\n]        {CONCAT; CLEAR;}
+[ \t]		{CONCAT; } /* Ignore */
+[^ \t\n] 	{CONCAT; } /* Ignore other charactor sets */
 <<EOF>>     {return 0;}
 
 %%
