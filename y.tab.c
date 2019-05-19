@@ -545,13 +545,13 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    71,    71,    72,    76,    77,    81,    92,   103,   114,
-     122,   125,   131,   132,   136,   137,   141,   142,   143,   146,
-     147,   148,   152,   153,   157,   158,   162,   163,   167,   168,
-     169,   170,   171,   172,   176,   183,   184,   185,   186,   187,
-     188,   189,   193,   194,   195,   196,   197,   198,   199,   203,
-     204,   208,   209,   213,   214,   218,   219,   220,   221,   222,
-     227,   228,   229,   230,   231
+       0,    71,    71,    72,    76,    77,    81,    92,   101,   110,
+     117,   120,   126,   127,   131,   132,   136,   137,   138,   141,
+     142,   143,   147,   148,   152,   153,   157,   158,   162,   163,
+     164,   165,   166,   167,   171,   182,   183,   184,   185,   186,
+     187,   188,   192,   193,   194,   195,   196,   197,   198,   202,
+     203,   207,   208,   212,   213,   217,   218,   219,   220,   221,
+     226,   227,   228,   229,   230
 };
 #endif
 
@@ -1429,79 +1429,78 @@ yyreduce:
 #line 92 "compiler_hw2.y" /* yacc.c:1646  */
     {
         if(!strcmp(new_func->argu_type,"")){
-            printf("------>1:%s\n",new_func->argu_type);
             sprintf(new_func->argu_type, "%s", (yyvsp[-2].string));
         }else{
-            printf("------>2:%s\n",new_func->argu_type);
             char temp[32] = {};
             strcpy(temp, new_func->argu_type);
             sprintf(new_func->argu_type, "%s%s", (yyvsp[-2].string), temp);
         }
     }
-#line 1442 "y.tab.c" /* yacc.c:1646  */
+#line 1440 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 8:
-#line 103 "compiler_hw2.y" /* yacc.c:1646  */
+#line 101 "compiler_hw2.y" /* yacc.c:1646  */
     {
         if(!strcmp(new_func->argu_type,"")){
-            printf("------>3:%s\n",new_func->argu_type);
             sprintf(new_func->argu_type, ", %s", (yyvsp[-2].string));
         }else{
-            printf("------>4:%s\n",new_func->argu_type);
             char temp[32] = {};
             strcpy(temp, new_func->argu_type);
             sprintf(new_func->argu_type, ", %s%s", (yyvsp[-2].string), temp);
         }
     }
-#line 1458 "y.tab.c" /* yacc.c:1646  */
+#line 1454 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 9:
-#line 114 "compiler_hw2.y" /* yacc.c:1646  */
+#line 110 "compiler_hw2.y" /* yacc.c:1646  */
     {
         bzero(new_func->argu_type, sizeof(new_func->argu_type));
-        printf("------>5:\n");
         break;
     }
-#line 1468 "y.tab.c" /* yacc.c:1646  */
+#line 1463 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 10:
-#line 122 "compiler_hw2.y" /* yacc.c:1646  */
+#line 117 "compiler_hw2.y" /* yacc.c:1646  */
     {
 
     }
-#line 1476 "y.tab.c" /* yacc.c:1646  */
+#line 1471 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 11:
-#line 125 "compiler_hw2.y" /* yacc.c:1646  */
+#line 120 "compiler_hw2.y" /* yacc.c:1646  */
     {
         (yyval.string) = "def";
     }
-#line 1484 "y.tab.c" /* yacc.c:1646  */
+#line 1479 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 18:
-#line 143 "compiler_hw2.y" /* yacc.c:1646  */
+#line 138 "compiler_hw2.y" /* yacc.c:1646  */
     {
 
     }
-#line 1492 "y.tab.c" /* yacc.c:1646  */
+#line 1487 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 34:
-#line 176 "compiler_hw2.y" /* yacc.c:1646  */
+#line 171 "compiler_hw2.y" /* yacc.c:1646  */
     {
         sprintf(new_argu->name,"%s", (yyvsp[-1].string));
         sprintf(new_argu->data_type, "%s", (yyvsp[-2].string));
+        sprintf(new_argu->entry_type, "variable");
+        bzero(new_argu->argu_type, sizeof(new_argu->argu_type));
+        new_argu->scope = max_scope;
+        insert_symbol(new_argu);
     }
-#line 1501 "y.tab.c" /* yacc.c:1646  */
+#line 1500 "y.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1505 "y.tab.c" /* yacc.c:1646  */
+#line 1504 "y.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1729,7 +1728,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 234 "compiler_hw2.y" /* yacc.c:1906  */
+#line 233 "compiler_hw2.y" /* yacc.c:1906  */
 
 
 /* C code section */

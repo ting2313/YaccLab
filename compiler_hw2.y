@@ -91,10 +91,8 @@ func_def
 arguments
     : type ID arguments{
         if(!strcmp(new_func->argu_type,"")){
-            printf("------>1:%s\n",new_func->argu_type);
             sprintf(new_func->argu_type, "%s", $1);
         }else{
-            printf("------>2:%s\n",new_func->argu_type);
             char temp[32] = {};
             strcpy(temp, new_func->argu_type);
             sprintf(new_func->argu_type, "%s%s", $1, temp);
@@ -102,10 +100,8 @@ arguments
     }
     | COMMA type ID arguments{
         if(!strcmp(new_func->argu_type,"")){
-            printf("------>3:%s\n",new_func->argu_type);
             sprintf(new_func->argu_type, ", %s", $2);
         }else{
-            printf("------>4:%s\n",new_func->argu_type);
             char temp[32] = {};
             strcpy(temp, new_func->argu_type);
             sprintf(new_func->argu_type, ", %s%s", $2, temp);
@@ -113,7 +109,6 @@ arguments
     }
     |   {
         bzero(new_func->argu_type, sizeof(new_func->argu_type));
-        printf("------>5:\n");
         break;
     }
 ;
@@ -176,6 +171,10 @@ declaration
     : type ID equal_rhs{
         sprintf(new_argu->name,"%s", $2);
         sprintf(new_argu->data_type, "%s", $1);
+        sprintf(new_argu->entry_type, "variable");
+        bzero(new_argu->argu_type, sizeof(new_argu->argu_type));
+        new_argu->scope = max_scope;
+        insert_symbol(new_argu);
     }
 ;
 
