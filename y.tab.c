@@ -79,6 +79,7 @@ int lookup_symbol();
 void create_symbol();
 void insert_symbol();
 void dump_symbol();
+void print_symbol();
 void test();
 
 struct row{
@@ -93,7 +94,7 @@ typedef struct row* rowptr;
 rowptr head,tail,new_func,new_argu;
 
 
-#line 97 "y.tab.c" /* yacc.c:339  */
+#line 98 "y.tab.c" /* yacc.c:339  */
 
 # ifndef YY_NULLPTR
 #  if defined __cplusplus && 201103L <= __cplusplus
@@ -221,13 +222,13 @@ extern int yydebug;
 
 union YYSTYPE
 {
-#line 36 "compiler_hw2.y" /* yacc.c:355  */
+#line 37 "compiler_hw2.y" /* yacc.c:355  */
 
     int i_val;
     double f_val;
     char* string;
 
-#line 231 "y.tab.c" /* yacc.c:355  */
+#line 232 "y.tab.c" /* yacc.c:355  */
 };
 
 typedef union YYSTYPE YYSTYPE;
@@ -244,7 +245,7 @@ int yyparse (void);
 
 /* Copy the second part of user declarations.  */
 
-#line 248 "y.tab.c" /* yacc.c:358  */
+#line 249 "y.tab.c" /* yacc.c:358  */
 
 #ifdef short
 # undef short
@@ -545,13 +546,13 @@ static const yytype_uint8 yytranslate[] =
   /* YYRLINE[YYN] -- Source line where rule number YYN was defined.  */
 static const yytype_uint8 yyrline[] =
 {
-       0,    71,    71,    72,    76,    77,    81,    92,   101,   110,
-     117,   120,   126,   127,   131,   132,   136,   137,   138,   141,
-     142,   143,   147,   148,   152,   153,   157,   158,   162,   163,
-     164,   165,   166,   167,   171,   182,   183,   184,   185,   186,
-     187,   188,   192,   193,   194,   195,   196,   197,   198,   202,
-     203,   207,   208,   212,   213,   217,   218,   219,   220,   221,
-     226,   227,   228,   229,   230
+       0,    72,    72,    73,    77,    78,    82,    96,   112,   127,
+     134,   137,   143,   144,   148,   149,   153,   154,   155,   158,
+     159,   160,   164,   165,   169,   170,   174,   175,   179,   180,
+     181,   182,   183,   184,   188,   199,   200,   201,   202,   203,
+     204,   205,   209,   210,   211,   212,   213,   214,   215,   219,
+     220,   224,   225,   229,   230,   234,   235,   236,   237,   238,
+     243,   244,   245,   246,   247
 };
 #endif
 
@@ -1413,21 +1414,31 @@ yyreduce:
   switch (yyn)
     {
         case 6:
-#line 81 "compiler_hw2.y" /* yacc.c:1646  */
+#line 82 "compiler_hw2.y" /* yacc.c:1646  */
     {
         sprintf(new_func->data_type, "%s", (yyvsp[-5].string));
         sprintf(new_func->entry_type, "function");
         sprintf(new_func->name, "%s", (yyvsp[-4].string));
         new_func->scope = 0;
         insert_symbol(new_func);
-        if(strcmp((yyvsp[0].string),"def"))    dump_symbol();
+        // if(!strcmp($6,"def")){
+        //     print_symbol();
+        //     dump_symbol();
+        //  }
     }
-#line 1426 "y.tab.c" /* yacc.c:1646  */
+#line 1430 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 7:
-#line 92 "compiler_hw2.y" /* yacc.c:1646  */
+#line 96 "compiler_hw2.y" /* yacc.c:1646  */
     {
+        printf("------------------->\n");
+        sprintf(new_argu->name, "%s", (yyvsp[-1].string));
+        sprintf(new_argu->data_type, "%s", (yyvsp[-2].string));
+        sprintf(new_argu->entry_type, "parameter");
+        new_argu->scope = max_scope+1;
+        insert_symbol(new_argu);
+
         if(!strcmp(new_func->argu_type,"")){
             sprintf(new_func->argu_type, "%s", (yyvsp[-2].string));
         }else{
@@ -1436,12 +1447,18 @@ yyreduce:
             sprintf(new_func->argu_type, "%s%s", (yyvsp[-2].string), temp);
         }
     }
-#line 1440 "y.tab.c" /* yacc.c:1646  */
+#line 1451 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 8:
-#line 101 "compiler_hw2.y" /* yacc.c:1646  */
+#line 112 "compiler_hw2.y" /* yacc.c:1646  */
     {
+        sprintf(new_argu->name, "%s", (yyvsp[-1].string));
+        sprintf(new_argu->data_type, "%s", (yyvsp[-2].string));
+        sprintf(new_argu->entry_type, "parameter");
+        new_argu->scope = max_scope+1;
+        insert_symbol(new_argu);
+
         if(!strcmp(new_func->argu_type,"")){
             sprintf(new_func->argu_type, ", %s", (yyvsp[-2].string));
         }else{
@@ -1450,44 +1467,44 @@ yyreduce:
             sprintf(new_func->argu_type, ", %s%s", (yyvsp[-2].string), temp);
         }
     }
-#line 1454 "y.tab.c" /* yacc.c:1646  */
+#line 1471 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 9:
-#line 110 "compiler_hw2.y" /* yacc.c:1646  */
+#line 127 "compiler_hw2.y" /* yacc.c:1646  */
     {
         bzero(new_func->argu_type, sizeof(new_func->argu_type));
         break;
     }
-#line 1463 "y.tab.c" /* yacc.c:1646  */
+#line 1480 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 10:
-#line 117 "compiler_hw2.y" /* yacc.c:1646  */
-    {
-
-    }
-#line 1471 "y.tab.c" /* yacc.c:1646  */
-    break;
-
-  case 11:
-#line 120 "compiler_hw2.y" /* yacc.c:1646  */
+#line 134 "compiler_hw2.y" /* yacc.c:1646  */
     {
         (yyval.string) = "def";
     }
-#line 1479 "y.tab.c" /* yacc.c:1646  */
+#line 1488 "y.tab.c" /* yacc.c:1646  */
+    break;
+
+  case 11:
+#line 137 "compiler_hw2.y" /* yacc.c:1646  */
+    {
+        (yyval.string) = "pre";
+    }
+#line 1496 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 18:
-#line 138 "compiler_hw2.y" /* yacc.c:1646  */
+#line 155 "compiler_hw2.y" /* yacc.c:1646  */
     {
 
     }
-#line 1487 "y.tab.c" /* yacc.c:1646  */
+#line 1504 "y.tab.c" /* yacc.c:1646  */
     break;
 
   case 34:
-#line 171 "compiler_hw2.y" /* yacc.c:1646  */
+#line 188 "compiler_hw2.y" /* yacc.c:1646  */
     {
         sprintf(new_argu->name,"%s", (yyvsp[-1].string));
         sprintf(new_argu->data_type, "%s", (yyvsp[-2].string));
@@ -1496,11 +1513,11 @@ yyreduce:
         new_argu->scope = max_scope;
         insert_symbol(new_argu);
     }
-#line 1500 "y.tab.c" /* yacc.c:1646  */
+#line 1517 "y.tab.c" /* yacc.c:1646  */
     break;
 
 
-#line 1504 "y.tab.c" /* yacc.c:1646  */
+#line 1521 "y.tab.c" /* yacc.c:1646  */
       default: break;
     }
   /* User semantic actions sometimes alter yychar, and that requires
@@ -1728,7 +1745,7 @@ yyreturn:
 #endif
   return yyresult;
 }
-#line 233 "compiler_hw2.y" /* yacc.c:1906  */
+#line 250 "compiler_hw2.y" /* yacc.c:1906  */
 
 
 /* C code section */
@@ -1820,7 +1837,7 @@ void dump_symbol() {
         //printf("Table is empty.\n");
         return;  //no need to dump
     }
-    else if(head->scope != max_scope){
+    else if(tail->scope != max_scope){
         //printf("The scope %d is empty.\n",max_scope);
         max_scope--;
         return;
@@ -1829,55 +1846,57 @@ void dump_symbol() {
     printf("\n\n%-10s%-10s%-12s%-10s%-10s%-10s\n\n",
         "Index", "Name", "Kind", "Type", "Scope", "Attribute");
     rowptr print = head;
+    rowptr pre = print;
     int index = 1;
-    /*find the row of the biggest scope*/
-    while(print->scope==max_scope){
-        printf("%-10d%-10s%-12s%-10s%-10d%-10s\n",
-            index, print->name, print->entry_type,\
-            print->data_type, print->scope, print->argu_type);
-        print = print->next;
-        free(head);
-        head = print;
-        index++;
-        if(print==NULL) break;
+    int flag = 0;
+    if(head->scope==max_scope){
+        head = NULL;
     }
+    /*find the row of the biggest scope*/
+    while(1){
+        if(print->scope==max_scope){
+            if(flag==1){
+                tail->next = NULL;
+                flag = -1;
+            }else if (flag==0){
+                tail = NULL;
+            }
+            printf("%-10d%-10s%-12s%-10s%-10d%-10s\n",
+                index, print->name, print->entry_type,\
+                print->data_type, print->scope, print->argu_type);
+            print = print->next;
+            free(pre);
+            pre = print;
+            index++;
+            if(print==NULL) break;
 
+        }else{
+            tail = print;
+            pre = print = print->next;
+            flag = 1;
+            continue;
+        }
+    }
     if(max_scope>0) max_scope--;
 }
 
-void dump_symbol_() {
-    printf("\n\n%-10s%-10s%-12s%-10s%-10s%-10s\n\n",
+void print_symbol(){
+    if(head==NULL){
+        return;
+    }
+
+    printf("\n\n----------PRINT ALL----------\n");
+    printf("%-10s%-10s%-12s%-10s%-10s%-10s\n\n",
         "Index", "Name", "Kind", "Type", "Scope", "Attribute");
     rowptr print = head;
-    rowptr preptr = head;
-    if(head==NULL) return;
-
-    /*find the row of the biggest scope*/
-    while(print->scope!=max_scope){
-//    printf("scope:%d,max:%d\n",print->scope, max_scope);
-        if(preptr!=print){
-            preptr = preptr->next;
-        }
-        print = print->next;
-    }
-
-    /*print and dump*/
     int index = 1;
-    tail = preptr;
-    if(print==head){
-        head = tail = NULL;     //dump all Symbol
-    }else{
-        tail->next = NULL;
-    }
-    preptr = print;
-    while(print!=NULL){
+    /*find the row of the biggest scope*/
+    while(1){
         printf("%-10d%-10s%-12s%-10s%-10d%-10s\n",
             index, print->name, print->entry_type,\
             print->data_type, print->scope, print->argu_type);
         print = print->next;
-        free(preptr);
-        preptr = print;
         index++;
+        if(print==NULL) break;
     }
-    if(max_scope>0) max_scope--;
 }

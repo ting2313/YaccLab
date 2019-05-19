@@ -1,8 +1,9 @@
 void func(bool a, int b, float c){
 	int hi = 5+3;
+	int two;
 }
-void hi(int p);
-void main(){
 
+void main(){
+	int y;
 	return 0;
 }

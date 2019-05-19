@@ -13,6 +13,7 @@ extern void create_symbol();
 extern void insert_symbol();
 extern int lookup_symbol();
 extern void dump_symbol();
+extern void print_symbol();
 
 /* This macro is used to record code line */
 #define CONCAT { strncat(buf, yytext, BUF_SIZE - strlen(buf) - 1);printf("%s",yytext); }
@@ -68,7 +69,7 @@ id			{letter}+({letter}|{digit})*
 "("		{CONCAT; return LB;}
 ")"		{CONCAT; return RB;}
 "{"		{CONCAT; max_scope++; return LCB;}
-"}"		{CONCAT; return RCB;}
+"}"		{CONCAT; dump_symbol();return RCB;}
 "["		{CONCAT; return LSB;}
 "]"		{CONCAT; return RSB;}
 ","		{CONCAT; return COMMA;}

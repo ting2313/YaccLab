@@ -15,6 +15,7 @@ int lookup_symbol();
 void create_symbol();
 void insert_symbol();
 void dump_symbol();
+void print_symbol();
 void test();
 
 struct row{
@@ -84,12 +85,22 @@ func_def
         sprintf(new_func->name, "%s", $2);
         new_func->scope = 0;
         insert_symbol(new_func);
-        if(strcmp($6,"def"))    dump_symbol();
+        // if(!strcmp($6,"def")){
+        //     print_symbol();
+        //     dump_symbol();
+        //  }
     }
 ;
 
 arguments
     : type ID arguments{
+        printf("------------------->\n");
+        sprintf(new_argu->name, "%s", $2);
+        sprintf(new_argu->data_type, "%s", $1);
+        sprintf(new_argu->entry_type, "parameter");
+        new_argu->scope = max_scope+1;
+        insert_symbol(new_argu);
+
         if(!strcmp(new_func->argu_type,"")){
             sprintf(new_func->argu_type, "%s", $1);
         }else{
@@ -99,6 +110,12 @@ arguments
         }
     }
     | COMMA type ID arguments{
+        sprintf(new_argu->name, "%s", $3);
+        sprintf(new_argu->data_type, "%s", $2);
+        sprintf(new_argu->entry_type, "parameter");
+        new_argu->scope = max_scope+1;
+        insert_symbol(new_argu);
+
         if(!strcmp(new_func->argu_type,"")){
             sprintf(new_func->argu_type, ", %s", $2);
         }else{
@@ -115,10 +132,10 @@ arguments
 
 compound_stat
     : LCB statments end_stat RCB {
-
+        $$ = "def";
     }
     | SEMICOLON {
-        $$ = "def";
+        $$ = "pre";
     }
 ;
 
@@ -321,7 +338,7 @@ void dump_symbol() {
         //printf("Table is empty.\n");
         return;  //no need to dump
     }
-    else if(head->scope != max_scope){
+    else if(tail->scope != max_scope){
         //printf("The scope %d is empty.\n",max_scope);
         max_scope--;
         return;
@@ -330,55 +347,57 @@ void dump_symbol() {
     printf("\n\n%-10s%-10s%-12s%-10s%-10s%-10s\n\n",
         "Index", "Name", "Kind", "Type", "Scope", "Attribute");
     rowptr print = head;
+    rowptr pre = print;
     int index = 1;
-    /*find the row of the biggest scope*/
-    while(print->scope==max_scope){
-        printf("%-10d%-10s%-12s%-10s%-10d%-10s\n",
-            index, print->name, print->entry_type,\
-            print->data_type, print->scope, print->argu_type);
-        print = print->next;
-        free(head);
-        head = print;
-        index++;
-        if(print==NULL) break;
+    int flag = 0;
+    if(head->scope==max_scope){
+        head = NULL;
     }
+    /*find the row of the biggest scope*/
+    while(1){
+        if(print->scope==max_scope){
+            if(flag==1){
+                tail->next = NULL;
+                flag = -1;
+            }else if (flag==0){
+                tail = NULL;
+            }
+            printf("%-10d%-10s%-12s%-10s%-10d%-10s\n",
+                index, print->name, print->entry_type,\
+                print->data_type, print->scope, print->argu_type);
+            print = print->next;
+            free(pre);
+            pre = print;
+            index++;
+            if(print==NULL) break;
 
+        }else{
+            tail = print;
+            pre = print = print->next;
+            flag = 1;
+            continue;
+        }
+    }
     if(max_scope>0) max_scope--;
 }
 
-void dump_symbol_() {
-    printf("\n\n%-10s%-10s%-12s%-10s%-10s%-10s\n\n",
+void print_symbol(){
+    if(head==NULL){
+        return;
+    }
+
+    printf("\n\n----------PRINT ALL----------\n");
+    printf("%-10s%-10s%-12s%-10s%-10s%-10s\n\n",
         "Index", "Name", "Kind", "Type", "Scope", "Attribute");
     rowptr print = head;
-    rowptr preptr = head;
-    if(head==NULL) return;
-
-    /*find the row of the biggest scope*/
-    while(print->scope!=max_scope){
-//    printf("scope:%d,max:%d\n",print->scope, max_scope);
-        if(preptr!=print){
-            preptr = preptr->next;
-        }
-        print = print->next;
-    }
-
-    /*print and dump*/
     int index = 1;
-    tail = preptr;
-    if(print==head){
-        head = tail = NULL;     //dump all Symbol
-    }else{
-        tail->next = NULL;
-    }
-    preptr = print;
-    while(print!=NULL){
+    /*find the row of the biggest scope*/
+    while(1){
         printf("%-10d%-10s%-12s%-10s%-10d%-10s\n",
             index, print->name, print->entry_type,\
             print->data_type, print->scope, print->argu_type);
         print = print->next;
-        free(preptr);
-        preptr = print;
         index++;
+        if(print==NULL) break;
     }
-    if(max_scope>0) max_scope--;
 }
