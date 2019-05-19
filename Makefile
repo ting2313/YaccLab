@@ -13,7 +13,7 @@ parser:
 	yacc ${YFLAG} ${FNAME}.y
 
 test: compile
-	./${EXE} < input/syntactic_error.c
+	./${EXE} < input/test.c
 
 clean:
 	rm ${EXE} y.tab* lex.* y.output

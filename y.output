@@ -1,0 +1,1625 @@
+Terminals unused in grammar
+
+   FOR
+   AND
+   OR
+   NOT
+   LSB
+   RSB
+   B_CONST
+
+
+Grammar
+
+    0 $accept: program $end
+
+    1 program: external_stat program
+    2        | %empty
+
+    3 external_stat: declaration SEMICOLON
+    4              | func_def
+
+    5 func_def: type ID LB arguments RB compound_stat
+
+    6 arguments: type ID arguments
+    7          | COMMA type ID arguments
+    8          | %empty
+
+    9 compound_stat: LCB statments end_stat RCB
+   10              | SEMICOLON
+
+   11 end_stat: RETURN value SEMICOLON
+   12         | %empty
+
+   13 statments: stat statments
+   14          | %empty
+
+   15 stat: declaration SEMICOLON
+   16     | ID equal_rhs SEMICOLON
+   17     | WHILE LB condition RB compound_stat
+   18     | IF LB condition RB compound_stat else_scope
+   19     | PRINT LB print_word RB SEMICOLON
+   20     | value postfix SEMICOLON
+
+   21 else_scope: ELSE compound_stat
+   22           | %empty
+
+   23 print_word: ID
+   24           | STR_CONST
+
+   25 condition: value
+   26          | %empty
+
+   27 comparison: EQ value
+   28           | ML value
+   29           | LT value
+   30           | MLE value
+   31           | LTE value
+   32           | NE value
+
+   33 declaration: type ID equal_rhs
+
+   34 equal_rhs: '=' value
+   35          | ADDASGN value
+   36          | SUBASGN value
+   37          | MULASGN value
+   38          | DIVASGN value
+   39          | MODASGN value
+   40          | %empty
+
+   41 value: I_CONST
+   42      | F_CONST
+   43      | value after_value
+   44      | LB value RB
+   45      | ID function_call
+   46      | T
+   47      | F
+
+   48 function_call: LB arguments RB
+   49              | %empty
+
+   50 after_value: expression
+   51            | comparison
+
+   52 postfix: INC
+   53        | DEC
+
+   54 expression: '+' value
+   55           | '-' value
+   56           | '*' value
+   57           | '/' value
+   58           | '%' value
+
+   59 type: INT
+   60     | FLOAT
+   61     | BOOL
+   62     | STRING
+   63     | VOID
+
+
+Terminals, with rules where they appear
+
+$end (0) 0
+'%' (37) 58
+'*' (42) 56
+'+' (43) 54
+'-' (45) 55
+'/' (47) 57
+'=' (61) 34
+error (256)
+RETURN (258) 11
+ADDASGN (259) 35
+SUBASGN (260) 36
+MULASGN (261) 37
+DIVASGN (262) 38
+MODASGN (263) 39
+PRINT (264) 19
+IF (265) 18
+ELSE (266) 21
+FOR (267)
+WHILE (268) 17
+T (269) 46
+F (270) 47
+SEMICOLON (271) 3 10 11 15 16 19 20
+EQ (272) 27
+NE (273) 32
+LT (274) 29
+LTE (275) 31
+ML (276) 28
+MLE (277) 30
+AND (278)
+OR (279)
+NOT (280)
+LB (281) 5 17 18 19 44 48
+RB (282) 5 17 18 19 44 48
+LCB (283) 9
+RCB (284) 9
+LSB (285)
+RSB (286)
+COMMA (287) 7
+INC (288) 52
+DEC (289) 53
+I_CONST (290) 41
+F_CONST (291) 42
+B_CONST (292)
+STR_CONST (293) 24
+ID (294) 5 6 7 16 23 33 45
+VOID (295) 63
+INT (296) 59
+FLOAT (297) 60
+STRING (298) 62
+BOOL (299) 61
+
+
+Nonterminals, with rules where they appear
+
+$accept (51)
+    on left: 0
+program (52)
+    on left: 1 2, on right: 0 1
+external_stat (53)
+    on left: 3 4, on right: 1
+func_def (54)
+    on left: 5, on right: 4
+arguments (55)
+    on left: 6 7 8, on right: 5 6 7 48
+compound_stat (56)
+    on left: 9 10, on right: 5 17 18 21
+end_stat (57)
+    on left: 11 12, on right: 9
+statments (58)
+    on left: 13 14, on right: 9 13
+stat (59)
+    on left: 15 16 17 18 19 20, on right: 13
+else_scope (60)
+    on left: 21 22, on right: 18
+print_word (61)
+    on left: 23 24, on right: 19
+condition (62)
+    on left: 25 26, on right: 17 18
+comparison (63)
+    on left: 27 28 29 30 31 32, on right: 51
+declaration (64)
+    on left: 33, on right: 3 15
+equal_rhs (65)
+    on left: 34 35 36 37 38 39 40, on right: 16 33
+value (66)
+    on left: 41 42 43 44 45 46 47, on right: 11 20 25 27 28 29 30 31
+    32 34 35 36 37 38 39 43 44 54 55 56 57 58
+function_call (67)
+    on left: 48 49, on right: 45
+after_value (68)
+    on left: 50 51, on right: 43
+postfix (69)
+    on left: 52 53, on right: 20
+expression (70)
+    on left: 54 55 56 57 58, on right: 50
+type (71)
+    on left: 59 60 61 62 63, on right: 5 6 7 33
+
+
+State 0
+
+    0 $accept: . program $end
+
+    VOID    shift, and go to state 1
+    INT     shift, and go to state 2
+    FLOAT   shift, and go to state 3
+    STRING  shift, and go to state 4
+    BOOL    shift, and go to state 5
+
+    $default  reduce using rule 2 (program)
+
+    program        go to state 6
+    external_stat  go to state 7
+    func_def       go to state 8
+    declaration    go to state 9
+    type           go to state 10
+
+
+State 1
+
+   63 type: VOID .
+
+    $default  reduce using rule 63 (type)
+
+
+State 2
+
+   59 type: INT .
+
+    $default  reduce using rule 59 (type)
+
+
+State 3
+
+   60 type: FLOAT .
+
+    $default  reduce using rule 60 (type)
+
+
+State 4
+
+   62 type: STRING .
+
+    $default  reduce using rule 62 (type)
+
+
+State 5
+
+   61 type: BOOL .
+
+    $default  reduce using rule 61 (type)
+
+
+State 6
+
+    0 $accept: program . $end
+
+    $end  shift, and go to state 11
+
+
+State 7
+
+    1 program: external_stat . program
+
+    VOID    shift, and go to state 1
+    INT     shift, and go to state 2
+    FLOAT   shift, and go to state 3
+    STRING  shift, and go to state 4
+    BOOL    shift, and go to state 5
+
+    $default  reduce using rule 2 (program)
+
+    program        go to state 12
+    external_stat  go to state 7
+    func_def       go to state 8
+    declaration    go to state 9
+    type           go to state 10
+
+
+State 8
+
+    4 external_stat: func_def .
+
+    $default  reduce using rule 4 (external_stat)
+
+
+State 9
+
+    3 external_stat: declaration . SEMICOLON
+
+    SEMICOLON  shift, and go to state 13
+
+
+State 10
+
+    5 func_def: type . ID LB arguments RB compound_stat
+   33 declaration: type . ID equal_rhs
+
+    ID  shift, and go to state 14
+
+
+State 11
+
+    0 $accept: program $end .
+
+    $default  accept
+
+
+State 12
+
+    1 program: external_stat program .
+
+    $default  reduce using rule 1 (program)
+
+
+State 13
+
+    3 external_stat: declaration SEMICOLON .
+
+    $default  reduce using rule 3 (external_stat)
+
+
+State 14
+
+    5 func_def: type ID . LB arguments RB compound_stat
+   33 declaration: type ID . equal_rhs
+
+    '='      shift, and go to state 15
+    ADDASGN  shift, and go to state 16
+    SUBASGN  shift, and go to state 17
+    MULASGN  shift, and go to state 18
+    DIVASGN  shift, and go to state 19
+    MODASGN  shift, and go to state 20
+    LB       shift, and go to state 21
+
+    $default  reduce using rule 40 (equal_rhs)
+
+    equal_rhs  go to state 22
+
+
+State 15
+
+   34 equal_rhs: '=' . value
+
+    T        shift, and go to state 23
+    F        shift, and go to state 24
+    LB       shift, and go to state 25
+    I_CONST  shift, and go to state 26
+    F_CONST  shift, and go to state 27
+    ID       shift, and go to state 28
+
+    value  go to state 29
+
+
+State 16
+
+   35 equal_rhs: ADDASGN . value
+
+    T        shift, and go to state 23
+    F        shift, and go to state 24
+    LB       shift, and go to state 25
+    I_CONST  shift, and go to state 26
+    F_CONST  shift, and go to state 27
+    ID       shift, and go to state 28
+
+    value  go to state 30
+
+
+State 17
+
+   36 equal_rhs: SUBASGN . value
+
+    T        shift, and go to state 23
+    F        shift, and go to state 24
+    LB       shift, and go to state 25
+    I_CONST  shift, and go to state 26
+    F_CONST  shift, and go to state 27
+    ID       shift, and go to state 28
+
+    value  go to state 31
+
+
+State 18
+
+   37 equal_rhs: MULASGN . value
+
+    T        shift, and go to state 23
+    F        shift, and go to state 24
+    LB       shift, and go to state 25
+    I_CONST  shift, and go to state 26
+    F_CONST  shift, and go to state 27
+    ID       shift, and go to state 28
+
+    value  go to state 32
+
+
+State 19
+
+   38 equal_rhs: DIVASGN . value
+
+    T        shift, and go to state 23
+    F        shift, and go to state 24
+    LB       shift, and go to state 25
+    I_CONST  shift, and go to state 26
+    F_CONST  shift, and go to state 27
+    ID       shift, and go to state 28
+
+    value  go to state 33
+
+
+State 20
+
+   39 equal_rhs: MODASGN . value
+
+    T        shift, and go to state 23
+    F        shift, and go to state 24
+    LB       shift, and go to state 25
+    I_CONST  shift, and go to state 26
+    F_CONST  shift, and go to state 27
+    ID       shift, and go to state 28
+
+    value  go to state 34
+
+
+State 21
+
+    5 func_def: type ID LB . arguments RB compound_stat
+
+    COMMA   shift, and go to state 35
+    VOID    shift, and go to state 1
+    INT     shift, and go to state 2
+    FLOAT   shift, and go to state 3
+    STRING  shift, and go to state 4
+    BOOL    shift, and go to state 5
+
+    $default  reduce using rule 8 (arguments)
+
+    arguments  go to state 36
+    type       go to state 37
+
+
+State 22
+
+   33 declaration: type ID equal_rhs .
+
+    $default  reduce using rule 33 (declaration)
+
+
+State 23
+
+   46 value: T .
+
+    $default  reduce using rule 46 (value)
+
+
+State 24
+
+   47 value: F .
+
+    $default  reduce using rule 47 (value)
+
+
+State 25
+
+   44 value: LB . value RB
+
+    T        shift, and go to state 23
+    F        shift, and go to state 24
+    LB       shift, and go to state 25
+    I_CONST  shift, and go to state 26
+    F_CONST  shift, and go to state 27
+    ID       shift, and go to state 28
+
+    value  go to state 38
+
+
+State 26
+
+   41 value: I_CONST .
+
+    $default  reduce using rule 41 (value)
+
+
+State 27
+
+   42 value: F_CONST .
+
+    $default  reduce using rule 42 (value)
+
+
+State 28
+
+   45 value: ID . function_call
+
+    LB  shift, and go to state 39
+
+    $default  reduce using rule 49 (function_call)
+
+    function_call  go to state 40
+
+
+State 29
+
+   34 equal_rhs: '=' value .
+   43 value: value . after_value
+
+    EQ   shift, and go to state 41
+    NE   shift, and go to state 42
+    LT   shift, and go to state 43
+    LTE  shift, and go to state 44
+    ML   shift, and go to state 45
+    MLE  shift, and go to state 46
+    '+'  shift, and go to state 47
+    '-'  shift, and go to state 48
+    '*'  shift, and go to state 49
+    '/'  shift, and go to state 50
+    '%'  shift, and go to state 51
+
+    $default  reduce using rule 34 (equal_rhs)
+
+    comparison   go to state 52
+    after_value  go to state 53
+    expression   go to state 54
+
+
+State 30
+
+   35 equal_rhs: ADDASGN value .
+   43 value: value . after_value
+
+    EQ   shift, and go to state 41
+    NE   shift, and go to state 42
+    LT   shift, and go to state 43
+    LTE  shift, and go to state 44
+    ML   shift, and go to state 45
+    MLE  shift, and go to state 46
+    '+'  shift, and go to state 47
+    '-'  shift, and go to state 48
+    '*'  shift, and go to state 49
+    '/'  shift, and go to state 50
+    '%'  shift, and go to state 51
+
+    $default  reduce using rule 35 (equal_rhs)
+
+    comparison   go to state 52
+    after_value  go to state 53
+    expression   go to state 54
+
+
+State 31
+
+   36 equal_rhs: SUBASGN value .
+   43 value: value . after_value
+
+    EQ   shift, and go to state 41
+    NE   shift, and go to state 42
+    LT   shift, and go to state 43
+    LTE  shift, and go to state 44
+    ML   shift, and go to state 45
+    MLE  shift, and go to state 46
+    '+'  shift, and go to state 47
+    '-'  shift, and go to state 48
+    '*'  shift, and go to state 49
+    '/'  shift, and go to state 50
+    '%'  shift, and go to state 51
+
+    $default  reduce using rule 36 (equal_rhs)
+
+    comparison   go to state 52
+    after_value  go to state 53
+    expression   go to state 54
+
+
+State 32
+
+   37 equal_rhs: MULASGN value .
+   43 value: value . after_value
+
+    EQ   shift, and go to state 41
+    NE   shift, and go to state 42
+    LT   shift, and go to state 43
+    LTE  shift, and go to state 44
+    ML   shift, and go to state 45
+    MLE  shift, and go to state 46
+    '+'  shift, and go to state 47
+    '-'  shift, and go to state 48
+    '*'  shift, and go to state 49
+    '/'  shift, and go to state 50
+    '%'  shift, and go to state 51
+
+    $default  reduce using rule 37 (equal_rhs)
+
+    comparison   go to state 52
+    after_value  go to state 53
+    expression   go to state 54
+
+
+State 33
+
+   38 equal_rhs: DIVASGN value .
+   43 value: value . after_value
+
+    EQ   shift, and go to state 41
+    NE   shift, and go to state 42
+    LT   shift, and go to state 43
+    LTE  shift, and go to state 44
+    ML   shift, and go to state 45
+    MLE  shift, and go to state 46
+    '+'  shift, and go to state 47
+    '-'  shift, and go to state 48
+    '*'  shift, and go to state 49
+    '/'  shift, and go to state 50
+    '%'  shift, and go to state 51
+
+    $default  reduce using rule 38 (equal_rhs)
+
+    comparison   go to state 52
+    after_value  go to state 53
+    expression   go to state 54
+
+
+State 34
+
+   39 equal_rhs: MODASGN value .
+   43 value: value . after_value
+
+    EQ   shift, and go to state 41
+    NE   shift, and go to state 42
+    LT   shift, and go to state 43
+    LTE  shift, and go to state 44
+    ML   shift, and go to state 45
+    MLE  shift, and go to state 46
+    '+'  shift, and go to state 47
+    '-'  shift, and go to state 48
+    '*'  shift, and go to state 49
+    '/'  shift, and go to state 50
+    '%'  shift, and go to state 51
+
+    $default  reduce using rule 39 (equal_rhs)
+
+    comparison   go to state 52
+    after_value  go to state 53
+    expression   go to state 54
+
+
+State 35
+
+    7 arguments: COMMA . type ID arguments
+
+    VOID    shift, and go to state 1
+    INT     shift, and go to state 2
+    FLOAT   shift, and go to state 3
+    STRING  shift, and go to state 4
+    BOOL    shift, and go to state 5
+
+    type  go to state 55
+
+
+State 36
+
+    5 func_def: type ID LB arguments . RB compound_stat
+
+    RB  shift, and go to state 56
+
+
+State 37
+
+    6 arguments: type . ID arguments
+
+    ID  shift, and go to state 57
+
+
+State 38
+
+   43 value: value . after_value
+   44      | LB value . RB
+
+    EQ   shift, and go to state 41
+    NE   shift, and go to state 42
+    LT   shift, and go to state 43
+    LTE  shift, and go to state 44
+    ML   shift, and go to state 45
+    MLE  shift, and go to state 46
+    '+'  shift, and go to state 47
+    '-'  shift, and go to state 48
+    '*'  shift, and go to state 49
+    '/'  shift, and go to state 50
+    '%'  shift, and go to state 51
+    RB   shift, and go to state 58
+
+    comparison   go to state 52
+    after_value  go to state 53
+    expression   go to state 54
+
+
+State 39
+
+   48 function_call: LB . arguments RB
+
+    COMMA   shift, and go to state 35
+    VOID    shift, and go to state 1
+    INT     shift, and go to state 2
+    FLOAT   shift, and go to state 3
+    STRING  shift, and go to state 4
+    BOOL    shift, and go to state 5
+
+    $default  reduce using rule 8 (arguments)
+
+    arguments  go to state 59
+    type       go to state 37
+
+
+State 40
+
+   45 value: ID function_call .
+
+    $default  reduce using rule 45 (value)
+
+
+State 41
+
+   27 comparison: EQ . value
+
+    T        shift, and go to state 23
+    F        shift, and go to state 24
+    LB       shift, and go to state 25
+    I_CONST  shift, and go to state 26
+    F_CONST  shift, and go to state 27
+    ID       shift, and go to state 28
+
+    value  go to state 60
+
+
+State 42
+
+   32 comparison: NE . value
+
+    T        shift, and go to state 23
+    F        shift, and go to state 24
+    LB       shift, and go to state 25
+    I_CONST  shift, and go to state 26
+    F_CONST  shift, and go to state 27
+    ID       shift, and go to state 28
+
+    value  go to state 61
+
+
+State 43
+
+   29 comparison: LT . value
+
+    T        shift, and go to state 23
+    F        shift, and go to state 24
+    LB       shift, and go to state 25
+    I_CONST  shift, and go to state 26
+    F_CONST  shift, and go to state 27
+    ID       shift, and go to state 28
+
+    value  go to state 62
+
+
+State 44
+
+   31 comparison: LTE . value
+
+    T        shift, and go to state 23
+    F        shift, and go to state 24
+    LB       shift, and go to state 25
+    I_CONST  shift, and go to state 26
+    F_CONST  shift, and go to state 27
+    ID       shift, and go to state 28
+
+    value  go to state 63
+
+
+State 45
+
+   28 comparison: ML . value
+
+    T        shift, and go to state 23
+    F        shift, and go to state 24
+    LB       shift, and go to state 25
+    I_CONST  shift, and go to state 26
+    F_CONST  shift, and go to state 27
+    ID       shift, and go to state 28
+
+    value  go to state 64
+
+
+State 46
+
+   30 comparison: MLE . value
+
+    T        shift, and go to state 23
+    F        shift, and go to state 24
+    LB       shift, and go to state 25
+    I_CONST  shift, and go to state 26
+    F_CONST  shift, and go to state 27
+    ID       shift, and go to state 28
+
+    value  go to state 65
+
+
+State 47
+
+   54 expression: '+' . value
+
+    T        shift, and go to state 23
+    F        shift, and go to state 24
+    LB       shift, and go to state 25
+    I_CONST  shift, and go to state 26
+    F_CONST  shift, and go to state 27
+    ID       shift, and go to state 28
+
+    value  go to state 66
+
+
+State 48
+
+   55 expression: '-' . value
+
+    T        shift, and go to state 23
+    F        shift, and go to state 24
+    LB       shift, and go to state 25
+    I_CONST  shift, and go to state 26
+    F_CONST  shift, and go to state 27
+    ID       shift, and go to state 28
+
+    value  go to state 67
+
+
+State 49
+
+   56 expression: '*' . value
+
+    T        shift, and go to state 23
+    F        shift, and go to state 24
+    LB       shift, and go to state 25
+    I_CONST  shift, and go to state 26
+    F_CONST  shift, and go to state 27
+    ID       shift, and go to state 28
+
+    value  go to state 68
+
+
+State 50
+
+   57 expression: '/' . value
+
+    T        shift, and go to state 23
+    F        shift, and go to state 24
+    LB       shift, and go to state 25
+    I_CONST  shift, and go to state 26
+    F_CONST  shift, and go to state 27
+    ID       shift, and go to state 28
+
+    value  go to state 69
+
+
+State 51
+
+   58 expression: '%' . value
+
+    T        shift, and go to state 23
+    F        shift, and go to state 24
+    LB       shift, and go to state 25
+    I_CONST  shift, and go to state 26
+    F_CONST  shift, and go to state 27
+    ID       shift, and go to state 28
+
+    value  go to state 70
+
+
+State 52
+
+   51 after_value: comparison .
+
+    $default  reduce using rule 51 (after_value)
+
+
+State 53
+
+   43 value: value after_value .
+
+    $default  reduce using rule 43 (value)
+
+
+State 54
+
+   50 after_value: expression .
+
+    $default  reduce using rule 50 (after_value)
+
+
+State 55
+
+    7 arguments: COMMA type . ID arguments
+
+    ID  shift, and go to state 71
+
+
+State 56
+
+    5 func_def: type ID LB arguments RB . compound_stat
+
+    SEMICOLON  shift, and go to state 72
+    LCB        shift, and go to state 73
+
+    compound_stat  go to state 74
+
+
+State 57
+
+    6 arguments: type ID . arguments
+
+    COMMA   shift, and go to state 35
+    VOID    shift, and go to state 1
+    INT     shift, and go to state 2
+    FLOAT   shift, and go to state 3
+    STRING  shift, and go to state 4
+    BOOL    shift, and go to state 5
+
+    $default  reduce using rule 8 (arguments)
+
+    arguments  go to state 75
+    type       go to state 37
+
+
+State 58
+
+   44 value: LB value RB .
+
+    $default  reduce using rule 44 (value)
+
+
+State 59
+
+   48 function_call: LB arguments . RB
+
+    RB  shift, and go to state 76
+
+
+State 60
+
+   27 comparison: EQ value .
+   43 value: value . after_value
+
+    '+'  shift, and go to state 47
+    '-'  shift, and go to state 48
+    '*'  shift, and go to state 49
+    '/'  shift, and go to state 50
+    '%'  shift, and go to state 51
+
+    $default  reduce using rule 27 (comparison)
+
+    comparison   go to state 52
+    after_value  go to state 53
+    expression   go to state 54
+
+
+State 61
+
+   32 comparison: NE value .
+   43 value: value . after_value
+
+    '+'  shift, and go to state 47
+    '-'  shift, and go to state 48
+    '*'  shift, and go to state 49
+    '/'  shift, and go to state 50
+    '%'  shift, and go to state 51
+
+    $default  reduce using rule 32 (comparison)
+
+    comparison   go to state 52
+    after_value  go to state 53
+    expression   go to state 54
+
+
+State 62
+
+   29 comparison: LT value .
+   43 value: value . after_value
+
+    '+'  shift, and go to state 47
+    '-'  shift, and go to state 48
+    '*'  shift, and go to state 49
+    '/'  shift, and go to state 50
+    '%'  shift, and go to state 51
+
+    $default  reduce using rule 29 (comparison)
+
+    comparison   go to state 52
+    after_value  go to state 53
+    expression   go to state 54
+
+
+State 63
+
+   31 comparison: LTE value .
+   43 value: value . after_value
+
+    '+'  shift, and go to state 47
+    '-'  shift, and go to state 48
+    '*'  shift, and go to state 49
+    '/'  shift, and go to state 50
+    '%'  shift, and go to state 51
+
+    $default  reduce using rule 31 (comparison)
+
+    comparison   go to state 52
+    after_value  go to state 53
+    expression   go to state 54
+
+
+State 64
+
+   28 comparison: ML value .
+   43 value: value . after_value
+
+    '+'  shift, and go to state 47
+    '-'  shift, and go to state 48
+    '*'  shift, and go to state 49
+    '/'  shift, and go to state 50
+    '%'  shift, and go to state 51
+
+    $default  reduce using rule 28 (comparison)
+
+    comparison   go to state 52
+    after_value  go to state 53
+    expression   go to state 54
+
+
+State 65
+
+   30 comparison: MLE value .
+   43 value: value . after_value
+
+    '+'  shift, and go to state 47
+    '-'  shift, and go to state 48
+    '*'  shift, and go to state 49
+    '/'  shift, and go to state 50
+    '%'  shift, and go to state 51
+
+    $default  reduce using rule 30 (comparison)
+
+    comparison   go to state 52
+    after_value  go to state 53
+    expression   go to state 54
+
+
+State 66
+
+   43 value: value . after_value
+   54 expression: '+' value .
+
+    '*'  shift, and go to state 49
+    '/'  shift, and go to state 50
+    '%'  shift, and go to state 51
+
+    $default  reduce using rule 54 (expression)
+
+    comparison   go to state 52
+    after_value  go to state 53
+    expression   go to state 54
+
+
+State 67
+
+   43 value: value . after_value
+   55 expression: '-' value .
+
+    '*'  shift, and go to state 49
+    '/'  shift, and go to state 50
+    '%'  shift, and go to state 51
+
+    $default  reduce using rule 55 (expression)
+
+    comparison   go to state 52
+    after_value  go to state 53
+    expression   go to state 54
+
+
+State 68
+
+   43 value: value . after_value
+   56 expression: '*' value .
+
+    $default  reduce using rule 56 (expression)
+
+    comparison   go to state 52
+    after_value  go to state 53
+    expression   go to state 54
+
+
+State 69
+
+   43 value: value . after_value
+   57 expression: '/' value .
+
+    $default  reduce using rule 57 (expression)
+
+    comparison   go to state 52
+    after_value  go to state 53
+    expression   go to state 54
+
+
+State 70
+
+   43 value: value . after_value
+   58 expression: '%' value .
+
+    $default  reduce using rule 58 (expression)
+
+    comparison   go to state 52
+    after_value  go to state 53
+    expression   go to state 54
+
+
+State 71
+
+    7 arguments: COMMA type ID . arguments
+
+    COMMA   shift, and go to state 35
+    VOID    shift, and go to state 1
+    INT     shift, and go to state 2
+    FLOAT   shift, and go to state 3
+    STRING  shift, and go to state 4
+    BOOL    shift, and go to state 5
+
+    $default  reduce using rule 8 (arguments)
+
+    arguments  go to state 77
+    type       go to state 37
+
+
+State 72
+
+   10 compound_stat: SEMICOLON .
+
+    $default  reduce using rule 10 (compound_stat)
+
+
+State 73
+
+    9 compound_stat: LCB . statments end_stat RCB
+
+    PRINT    shift, and go to state 78
+    IF       shift, and go to state 79
+    WHILE    shift, and go to state 80
+    T        shift, and go to state 23
+    F        shift, and go to state 24
+    LB       shift, and go to state 25
+    I_CONST  shift, and go to state 26
+    F_CONST  shift, and go to state 27
+    ID       shift, and go to state 81
+    VOID     shift, and go to state 1
+    INT      shift, and go to state 2
+    FLOAT    shift, and go to state 3
+    STRING   shift, and go to state 4
+    BOOL     shift, and go to state 5
+
+    $default  reduce using rule 14 (statments)
+
+    statments    go to state 82
+    stat         go to state 83
+    declaration  go to state 84
+    value        go to state 85
+    type         go to state 86
+
+
+State 74
+
+    5 func_def: type ID LB arguments RB compound_stat .
+
+    $default  reduce using rule 5 (func_def)
+
+
+State 75
+
+    6 arguments: type ID arguments .
+
+    $default  reduce using rule 6 (arguments)
+
+
+State 76
+
+   48 function_call: LB arguments RB .
+
+    $default  reduce using rule 48 (function_call)
+
+
+State 77
+
+    7 arguments: COMMA type ID arguments .
+
+    $default  reduce using rule 7 (arguments)
+
+
+State 78
+
+   19 stat: PRINT . LB print_word RB SEMICOLON
+
+    LB  shift, and go to state 87
+
+
+State 79
+
+   18 stat: IF . LB condition RB compound_stat else_scope
+
+    LB  shift, and go to state 88
+
+
+State 80
+
+   17 stat: WHILE . LB condition RB compound_stat
+
+    LB  shift, and go to state 89
+
+
+State 81
+
+   16 stat: ID . equal_rhs SEMICOLON
+   45 value: ID . function_call
+
+    '='      shift, and go to state 15
+    ADDASGN  shift, and go to state 16
+    SUBASGN  shift, and go to state 17
+    MULASGN  shift, and go to state 18
+    DIVASGN  shift, and go to state 19
+    MODASGN  shift, and go to state 20
+    LB       shift, and go to state 39
+
+    SEMICOLON  reduce using rule 40 (equal_rhs)
+    $default   reduce using rule 49 (function_call)
+
+    equal_rhs      go to state 90
+    function_call  go to state 40
+
+
+State 82
+
+    9 compound_stat: LCB statments . end_stat RCB
+
+    RETURN  shift, and go to state 91
+
+    $default  reduce using rule 12 (end_stat)
+
+    end_stat  go to state 92
+
+
+State 83
+
+   13 statments: stat . statments
+
+    PRINT    shift, and go to state 78
+    IF       shift, and go to state 79
+    WHILE    shift, and go to state 80
+    T        shift, and go to state 23
+    F        shift, and go to state 24
+    LB       shift, and go to state 25
+    I_CONST  shift, and go to state 26
+    F_CONST  shift, and go to state 27
+    ID       shift, and go to state 81
+    VOID     shift, and go to state 1
+    INT      shift, and go to state 2
+    FLOAT    shift, and go to state 3
+    STRING   shift, and go to state 4
+    BOOL     shift, and go to state 5
+
+    $default  reduce using rule 14 (statments)
+
+    statments    go to state 93
+    stat         go to state 83
+    declaration  go to state 84
+    value        go to state 85
+    type         go to state 86
+
+
+State 84
+
+   15 stat: declaration . SEMICOLON
+
+    SEMICOLON  shift, and go to state 94
+
+
+State 85
+
+   20 stat: value . postfix SEMICOLON
+   43 value: value . after_value
+
+    EQ   shift, and go to state 41
+    NE   shift, and go to state 42
+    LT   shift, and go to state 43
+    LTE  shift, and go to state 44
+    ML   shift, and go to state 45
+    MLE  shift, and go to state 46
+    '+'  shift, and go to state 47
+    '-'  shift, and go to state 48
+    '*'  shift, and go to state 49
+    '/'  shift, and go to state 50
+    '%'  shift, and go to state 51
+    INC  shift, and go to state 95
+    DEC  shift, and go to state 96
+
+    comparison   go to state 52
+    after_value  go to state 53
+    postfix      go to state 97
+    expression   go to state 54
+
+
+State 86
+
+   33 declaration: type . ID equal_rhs
+
+    ID  shift, and go to state 98
+
+
+State 87
+
+   19 stat: PRINT LB . print_word RB SEMICOLON
+
+    STR_CONST  shift, and go to state 99
+    ID         shift, and go to state 100
+
+    print_word  go to state 101
+
+
+State 88
+
+   18 stat: IF LB . condition RB compound_stat else_scope
+
+    T        shift, and go to state 23
+    F        shift, and go to state 24
+    LB       shift, and go to state 25
+    I_CONST  shift, and go to state 26
+    F_CONST  shift, and go to state 27
+    ID       shift, and go to state 28
+
+    $default  reduce using rule 26 (condition)
+
+    condition  go to state 102
+    value      go to state 103
+
+
+State 89
+
+   17 stat: WHILE LB . condition RB compound_stat
+
+    T        shift, and go to state 23
+    F        shift, and go to state 24
+    LB       shift, and go to state 25
+    I_CONST  shift, and go to state 26
+    F_CONST  shift, and go to state 27
+    ID       shift, and go to state 28
+
+    $default  reduce using rule 26 (condition)
+
+    condition  go to state 104
+    value      go to state 103
+
+
+State 90
+
+   16 stat: ID equal_rhs . SEMICOLON
+
+    SEMICOLON  shift, and go to state 105
+
+
+State 91
+
+   11 end_stat: RETURN . value SEMICOLON
+
+    T        shift, and go to state 23
+    F        shift, and go to state 24
+    LB       shift, and go to state 25
+    I_CONST  shift, and go to state 26
+    F_CONST  shift, and go to state 27
+    ID       shift, and go to state 28
+
+    value  go to state 106
+
+
+State 92
+
+    9 compound_stat: LCB statments end_stat . RCB
+
+    RCB  shift, and go to state 107
+
+
+State 93
+
+   13 statments: stat statments .
+
+    $default  reduce using rule 13 (statments)
+
+
+State 94
+
+   15 stat: declaration SEMICOLON .
+
+    $default  reduce using rule 15 (stat)
+
+
+State 95
+
+   52 postfix: INC .
+
+    $default  reduce using rule 52 (postfix)
+
+
+State 96
+
+   53 postfix: DEC .
+
+    $default  reduce using rule 53 (postfix)
+
+
+State 97
+
+   20 stat: value postfix . SEMICOLON
+
+    SEMICOLON  shift, and go to state 108
+
+
+State 98
+
+   33 declaration: type ID . equal_rhs
+
+    '='      shift, and go to state 15
+    ADDASGN  shift, and go to state 16
+    SUBASGN  shift, and go to state 17
+    MULASGN  shift, and go to state 18
+    DIVASGN  shift, and go to state 19
+    MODASGN  shift, and go to state 20
+
+    $default  reduce using rule 40 (equal_rhs)
+
+    equal_rhs  go to state 22
+
+
+State 99
+
+   24 print_word: STR_CONST .
+
+    $default  reduce using rule 24 (print_word)
+
+
+State 100
+
+   23 print_word: ID .
+
+    $default  reduce using rule 23 (print_word)
+
+
+State 101
+
+   19 stat: PRINT LB print_word . RB SEMICOLON
+
+    RB  shift, and go to state 109
+
+
+State 102
+
+   18 stat: IF LB condition . RB compound_stat else_scope
+
+    RB  shift, and go to state 110
+
+
+State 103
+
+   25 condition: value .
+   43 value: value . after_value
+
+    EQ   shift, and go to state 41
+    NE   shift, and go to state 42
+    LT   shift, and go to state 43
+    LTE  shift, and go to state 44
+    ML   shift, and go to state 45
+    MLE  shift, and go to state 46
+    '+'  shift, and go to state 47
+    '-'  shift, and go to state 48
+    '*'  shift, and go to state 49
+    '/'  shift, and go to state 50
+    '%'  shift, and go to state 51
+
+    $default  reduce using rule 25 (condition)
+
+    comparison   go to state 52
+    after_value  go to state 53
+    expression   go to state 54
+
+
+State 104
+
+   17 stat: WHILE LB condition . RB compound_stat
+
+    RB  shift, and go to state 111
+
+
+State 105
+
+   16 stat: ID equal_rhs SEMICOLON .
+
+    $default  reduce using rule 16 (stat)
+
+
+State 106
+
+   11 end_stat: RETURN value . SEMICOLON
+   43 value: value . after_value
+
+    SEMICOLON  shift, and go to state 112
+    EQ         shift, and go to state 41
+    NE         shift, and go to state 42
+    LT         shift, and go to state 43
+    LTE        shift, and go to state 44
+    ML         shift, and go to state 45
+    MLE        shift, and go to state 46
+    '+'        shift, and go to state 47
+    '-'        shift, and go to state 48
+    '*'        shift, and go to state 49
+    '/'        shift, and go to state 50
+    '%'        shift, and go to state 51
+
+    comparison   go to state 52
+    after_value  go to state 53
+    expression   go to state 54
+
+
+State 107
+
+    9 compound_stat: LCB statments end_stat RCB .
+
+    $default  reduce using rule 9 (compound_stat)
+
+
+State 108
+
+   20 stat: value postfix SEMICOLON .
+
+    $default  reduce using rule 20 (stat)
+
+
+State 109
+
+   19 stat: PRINT LB print_word RB . SEMICOLON
+
+    SEMICOLON  shift, and go to state 113
+
+
+State 110
+
+   18 stat: IF LB condition RB . compound_stat else_scope
+
+    SEMICOLON  shift, and go to state 72
+    LCB        shift, and go to state 73
+
+    compound_stat  go to state 114
+
+
+State 111
+
+   17 stat: WHILE LB condition RB . compound_stat
+
+    SEMICOLON  shift, and go to state 72
+    LCB        shift, and go to state 73
+
+    compound_stat  go to state 115
+
+
+State 112
+
+   11 end_stat: RETURN value SEMICOLON .
+
+    $default  reduce using rule 11 (end_stat)
+
+
+State 113
+
+   19 stat: PRINT LB print_word RB SEMICOLON .
+
+    $default  reduce using rule 19 (stat)
+
+
+State 114
+
+   18 stat: IF LB condition RB compound_stat . else_scope
+
+    ELSE  shift, and go to state 116
+
+    $default  reduce using rule 22 (else_scope)
+
+    else_scope  go to state 117
+
+
+State 115
+
+   17 stat: WHILE LB condition RB compound_stat .
+
+    $default  reduce using rule 17 (stat)
+
+
+State 116
+
+   21 else_scope: ELSE . compound_stat
+
+    SEMICOLON  shift, and go to state 72
+    LCB        shift, and go to state 73
+
+    compound_stat  go to state 118
+
+
+State 117
+
+   18 stat: IF LB condition RB compound_stat else_scope .
+
+    $default  reduce using rule 18 (stat)
+
+
+State 118
+
+   21 else_scope: ELSE compound_stat .
+
+    $default  reduce using rule 21 (else_scope)

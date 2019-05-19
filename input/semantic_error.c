@@ -1,5 +1,5 @@
 /*
- * 2019 Spring Compiler Course Assignment 2 
+ * 2019 Spring Compiler Course Assignment 2
  */
 
 float c = 1.5;
@@ -30,5 +30,5 @@ int main() {
     // Redeclare variable
     float a = 1.0;
 
-    return 0; 
+    return 0;
 }

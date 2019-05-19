@@ -68,7 +68,7 @@ id			{letter}+({letter}|{digit})*
 "("		{CONCAT; return LB;}
 ")"		{CONCAT; return RB;}
 "{"		{CONCAT; max_scope++; return LCB;}
-"}"		{CONCAT; dump_symbol(); return RCB;}
+"}"		{CONCAT; return RCB;}
 "["		{CONCAT; return LSB;}
 "]"		{CONCAT; return RSB;}
 ","		{CONCAT; return COMMA;}
@@ -123,7 +123,7 @@ id			{letter}+({letter}|{digit})*
 [\n]        {CONCAT; CLEAR;}
 [ \t]		{CONCAT; } /* Ignore */
 [^ \t\n] 	{CONCAT; } /* Ignore other charactor sets */
-<<EOF>>     {return 0;}
+<<EOF>>     {dump_symbol();return 0;}
 
 %%
 

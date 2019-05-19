@@ -22,7 +22,7 @@ struct row{
     char entry_type[12]; //fuction, parameter and variable
     char data_type[10]; // a type(int,float,bool,string and void)
     int scope;
-    char argu_type[10];
+    char argu_type[32];
     struct row* next;
 };
 typedef struct row* rowptr;
@@ -59,7 +59,7 @@ rowptr head,tail,new_func,new_argu;
 %left <string> STR_CONST ID VOID INT FLOAT STRING BOOL
 
 /* Nonterminal with return, which need to sepcify type */
-%type <string> type
+%type <string> type compound_stat
 
 /* Yacc will start at this nonterminal */
 %start program
@@ -82,26 +82,49 @@ func_def
         sprintf(new_func->data_type, "%s", $1);
         sprintf(new_func->entry_type, "function");
         sprintf(new_func->name, "%s", $2);
-        new_func->scope = max_scope;
+        new_func->scope = 0;
         insert_symbol(new_func);
+        if(strcmp($6,"def"))    dump_symbol();
     }
 ;
 
 arguments
     : type ID arguments{
-        sprintf(new_func->argu_type, "%s", $2);
+        if(!strcmp(new_func->argu_type,"")){
+            printf("------>1:%s\n",new_func->argu_type);
+            sprintf(new_func->argu_type, "%s", $1);
+        }else{
+            printf("------>2:%s\n",new_func->argu_type);
+            char temp[32] = {};
+            strcpy(temp, new_func->argu_type);
+            sprintf(new_func->argu_type, "%s%s", $1, temp);
+        }
     }
     | COMMA type ID arguments{
-        sprintf(new_func->argu_type, "%s, %s", new_func->argu_type, $2);
+        if(!strcmp(new_func->argu_type,"")){
+            printf("------>3:%s\n",new_func->argu_type);
+            sprintf(new_func->argu_type, ", %s", $2);
+        }else{
+            printf("------>4:%s\n",new_func->argu_type);
+            char temp[32] = {};
+            strcpy(temp, new_func->argu_type);
+            sprintf(new_func->argu_type, ", %s%s", $2, temp);
+        }
     }
-    |
+    |   {
+        bzero(new_func->argu_type, sizeof(new_func->argu_type));
+        printf("------>5:\n");
+        break;
+    }
 ;
 
 compound_stat
     : LCB statments end_stat RCB {
 
     }
-    | SEMICOLON
+    | SEMICOLON {
+        $$ = "def";
+    }
 ;
 
 end_stat
@@ -274,13 +297,12 @@ void create_symbol() {
 }
 
 void insert_symbol(rowptr new){
-    printf("insert_symbol:%s\n",buf);
-    rowptr add = malloc(sizeof(struct row));
+    rowptr add = malloc(sizeof(struct row)); //the memory address of new
     sprintf(add->name,"%s",new->name);
     sprintf(add->entry_type,"%s",new->entry_type);
     sprintf(add->data_type,"%s",new->data_type);
     sprintf(add->argu_type,"%s",new->argu_type);
-    add->scope = max_scope;
+    add->scope = new->scope;
     add->next = NULL;
     if(head==NULL){
         head = tail = add;
@@ -294,7 +316,38 @@ void insert_symbol(rowptr new){
 int lookup_symbol(char* name) {
 
 }
+
 void dump_symbol() {
+    if(head==NULL) {
+        //printf("Table is empty.\n");
+        return;  //no need to dump
+    }
+    else if(head->scope != max_scope){
+        //printf("The scope %d is empty.\n",max_scope);
+        max_scope--;
+        return;
+    }
+
+    printf("\n\n%-10s%-10s%-12s%-10s%-10s%-10s\n\n",
+        "Index", "Name", "Kind", "Type", "Scope", "Attribute");
+    rowptr print = head;
+    int index = 1;
+    /*find the row of the biggest scope*/
+    while(print->scope==max_scope){
+        printf("%-10d%-10s%-12s%-10s%-10d%-10s\n",
+            index, print->name, print->entry_type,\
+            print->data_type, print->scope, print->argu_type);
+        print = print->next;
+        free(head);
+        head = print;
+        index++;
+        if(print==NULL) break;
+    }
+
+    if(max_scope>0) max_scope--;
+}
+
+void dump_symbol_() {
     printf("\n\n%-10s%-10s%-12s%-10s%-10s%-10s\n\n",
         "Index", "Name", "Kind", "Type", "Scope", "Attribute");
     rowptr print = head;

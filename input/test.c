@@ -1,14 +1,8 @@
-void func(int c, int hi){
+void func(bool a, int b, float c){
 	int hi = 5+3;
 }
-/*hi there*/
-int main(){
+void hi(int p);
+void main(){
 
-	int c = (3+5)/9;
-
-	while(a>3){
-		c = 3;
-	}
-
-	return (5+3)*6;
+	return 0;
 }

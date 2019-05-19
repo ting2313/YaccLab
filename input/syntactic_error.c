@@ -8,6 +8,7 @@ bool loop(int n, int m) {
     while (n > m) {
         n--;
     }
+    n = m;
     return true;
 }
 
@@ -16,7 +17,6 @@ int main() {
     int x;
     int i;
     int a = 5;
-    print("Hi");
 
     // syntactical error
     iff (a > 10) {
