@@ -60,7 +60,7 @@ rowptr head,tail,new_func,new_argu;
 %left <string> STR_CONST ID VOID INT FLOAT STRING BOOL
 
 /* Nonterminal with return, which need to sepcify type */
-%type <string> type compound_stat
+%type <string> type compound_stat function_call
 
 /* Yacc will start at this nonterminal */
 %start program
@@ -85,16 +85,11 @@ func_def
         sprintf(new_func->name, "%s", $2);
         new_func->scope = 0;
         insert_symbol(new_func);
-        // if(!strcmp($6,"def")){
-        //     print_symbol();
-        //     dump_symbol();
-        //  }
     }
 ;
 
 arguments
     : type ID arguments{
-        printf("------------------->\n");
         sprintf(new_argu->name, "%s", $2);
         sprintf(new_argu->data_type, "%s", $1);
         sprintf(new_argu->entry_type, "parameter");
@@ -130,6 +125,12 @@ arguments
     }
 ;
 
+input_argu
+    : value input_argu
+    | COMMA value input_argu
+    |
+;
+
 compound_stat
     : LCB statments end_stat RCB {
         $$ = "def";
@@ -151,13 +152,25 @@ statments
 
 stat
     : declaration SEMICOLON
-    | ID equal_rhs SEMICOLON
-    | WHILE LB condition RB compound_stat{
-
+    | ID equal_rhs SEMICOLON{
+        if(!lookup_symbol($1, "variable")&&
+            !lookup_symbol($1, "parameter")){
+                char mesg[20] = {};
+                sprintf(mesg,"Undeclared variable %s", $1);
+                yyerror(mesg);
+        }
     }
+    | WHILE LB condition RB compound_stat
     | IF LB condition RB compound_stat else_scope
     | PRINT LB print_word RB SEMICOLON
     | value postfix SEMICOLON
+    | ID LB input_argu RB SEMICOLON{
+        if(!lookup_symbol($1, "function")){
+                char mesg[20] = {};
+                sprintf(mesg,"Undeclared function %s", $1);
+                yyerror(mesg);
+        }
+    }
 ;
 
 else_scope
@@ -166,7 +179,14 @@ else_scope
 ;
 
 print_word
-    : ID
+    : ID{
+        if(!lookup_symbol($1, "variable")&&
+            !lookup_symbol($1, "parameter")){
+                char mesg[20] = {};
+                sprintf(mesg,"Undeclared variable %s", $1);
+                yyerror(mesg);
+        }
+    }
     | STR_CONST
 ;
 
@@ -186,12 +206,18 @@ comparison
 
 declaration
     : type ID equal_rhs{
-        sprintf(new_argu->name,"%s", $2);
-        sprintf(new_argu->data_type, "%s", $1);
-        sprintf(new_argu->entry_type, "variable");
-        bzero(new_argu->argu_type, sizeof(new_argu->argu_type));
-        new_argu->scope = max_scope;
-        insert_symbol(new_argu);
+        if(lookup_symbol($2, "variable")){
+                char mesg[20] = {};
+                sprintf(mesg,"Redeclared variable %s", $2);
+                yyerror(mesg);
+        }else{
+            sprintf(new_argu->name,"%s", $2);
+            sprintf(new_argu->data_type, "%s", $1);
+            sprintf(new_argu->entry_type, "variable");
+            bzero(new_argu->argu_type, sizeof(new_argu->argu_type));
+            new_argu->scope = max_scope;
+            insert_symbol(new_argu);
+        }
     }
 ;
 
@@ -210,14 +236,33 @@ value
     | F_CONST
     | value after_value
     | LB value RB
-    | ID function_call
+    | ID function_call{
+        if(!strcmp($2, "ID")){
+            if(!lookup_symbol($1, "variable")&&
+                !lookup_symbol($1, "parameter")){
+                    char mesg[20] = {};
+                    sprintf(mesg,"Undeclared variable %s", $1);
+                    yyerror(mesg);
+            }
+        }else{
+            if(!lookup_symbol($1, "function")){
+                    char mesg[20] = {};
+                    sprintf(mesg,"Undeclared function %s", $1);
+                    yyerror(mesg);
+            }
+        }
+    }
     | T
     | F
 ;
 
 function_call
-    : LB arguments RB
-    | //for ID
+    : LB input_argu RB{
+        $$ = "funciton";
+    }
+    | {
+        $$ = "ID";
+    }
 ;
 
 after_value
@@ -253,6 +298,7 @@ type
 int main(int argc, char** argv)
 {
     yylineno = 0;
+    printf("%d: ", yylineno+1);
     create_symbol();
     yyparse();
 	printf("\nTotal lines: %d \n",yylineno);
@@ -264,43 +310,12 @@ int main(int argc, char** argv)
 
 void test(){
     printf("Testing table.\n");
-
-    sprintf(new_func->data_type, "%s", "int");
-    sprintf(new_func->entry_type, "function");
-    sprintf(new_func->name, "%s", "testing");
-    sprintf(new_func->argu_type, "%s", "int, int");
-    new_func->scope = 0;
-    insert_symbol(new_func);
-    sprintf(new_func->data_type, "%s", "int");
-    sprintf(new_func->entry_type, "function");
-    sprintf(new_func->name, "%s", "testing2");
-    sprintf(new_func->argu_type, "%s", "int, int");
-    new_func->scope = 0;
-    insert_symbol(new_func);
-
-    sprintf(new_func->data_type, "%s", "int");
-    sprintf(new_func->entry_type, "function");
-    sprintf(new_func->name, "%s", "testing3");
-    sprintf(new_func->argu_type, "%s", "int, int");
-    max_scope = 1;
-    insert_symbol(new_func);
-
-
-    sprintf(new_func->data_type, "%s", "int");
-    sprintf(new_func->entry_type, "function");
-    sprintf(new_func->name, "%s", "testing4");
-    sprintf(new_func->argu_type, "%s", "int, int");
-    max_scope = 1;
-    insert_symbol(new_func);
-
-    dump_symbol();
-    dump_symbol();
 }
 
 void yyerror(char *s)
 {
     printf("\n|-----------------------------------------------|\n");
-    printf("| Error found in line %d: %s\n", yylineno, buf);
+    printf("| Error found in line %d: %s\n", yylineno+1, buf);
     printf("| %s", s);
     printf("\n|-----------------------------------------------|\n\n");
 }
@@ -329,8 +344,20 @@ void insert_symbol(rowptr new){
     bzero(new, sizeof(new));
 }
 
-int lookup_symbol(char* name) {
 
+/*1: in table  0:not in table*/
+int lookup_symbol(char* name, char* type) {
+    if(head==NULL)  return 0;
+    rowptr point = head;
+    while(point!=NULL){
+        if(!strcmp(point->entry_type, type)){
+            if(!strcmp(point->name, name)){
+                return 1;
+            }
+        }
+        point = point->next;
+    }
+    return 0;
 }
 
 void dump_symbol() {
@@ -348,7 +375,7 @@ void dump_symbol() {
         "Index", "Name", "Kind", "Type", "Scope", "Attribute");
     rowptr print = head;
     rowptr pre = print;
-    int index = 1;
+    int index = 0;
     int flag = 0;
     if(head->scope==max_scope){
         head = NULL;
@@ -390,7 +417,7 @@ void print_symbol(){
     printf("%-10s%-10s%-12s%-10s%-10s%-10s\n\n",
         "Index", "Name", "Kind", "Type", "Scope", "Attribute");
     rowptr print = head;
-    int index = 1;
+    int index = 0;
     /*find the row of the biggest scope*/
     while(1){
         printf("%-10d%-10s%-12s%-10s%-10d%-10s\n",

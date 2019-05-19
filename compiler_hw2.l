@@ -97,8 +97,8 @@ id			{letter}+({letter}|{digit})*
 "return"    {CONCAT; return RETURN;}
 
  /* String Constant */
-\"				        { bzero(str, sizeof(str));BEGIN STRING_STATE; }
-<STRING_STATE>\"		{ BEGIN INITIAL;yylval.string=strdup(str);return STR_CONST;}
+\"				        { CONCAT; bzero(str, sizeof(str));BEGIN STRING_STATE; }
+<STRING_STATE>\"		{ CONCAT; BEGIN INITIAL;yylval.string=strdup(str);return STR_CONST;}
 <STRING_STATE>[^"]*		{ STR;CONCAT; }
 
  /* Number Constant */
@@ -108,7 +108,7 @@ id			{letter}+({letter}|{digit})*
  /* C type Comment */
 "/*"				{ CONCAT;BEGIN COMMENT; }
 <COMMENT>[^*\n]+	{ CONCAT;}
-<COMMENT>\n			{ CONCAT;}
+<COMMENT>\n			{ CONCAT;printf("%d: ", yylineno+1);}
 <COMMENT>"*"		{ CONCAT;}
 <COMMENT>"*/"		{ CONCAT;BEGIN INITIAL; }
 
@@ -121,7 +121,7 @@ id			{letter}+({letter}|{digit})*
  /* others */
 
 [;]         {CONCAT; return SEMICOLON;}
-[\n]        {CONCAT; CLEAR;}
+[\n]        {CONCAT; printf("%d: ", yylineno+1);CLEAR;}
 [ \t]		{CONCAT; } /* Ignore */
 [^ \t\n] 	{CONCAT; } /* Ignore other charactor sets */
 <<EOF>>     {dump_symbol();return 0;}

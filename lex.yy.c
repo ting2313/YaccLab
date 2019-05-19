@@ -1117,12 +1117,12 @@ YY_RULE_SETUP
 case 43:
 YY_RULE_SETUP
 #line 100 "compiler_hw2.l"
-{ bzero(str, sizeof(str));BEGIN STRING_STATE; }
+{ CONCAT; bzero(str, sizeof(str));BEGIN STRING_STATE; }
 	YY_BREAK
 case 44:
 YY_RULE_SETUP
 #line 101 "compiler_hw2.l"
-{ BEGIN INITIAL;yylval.string=strdup(str);return STR_CONST;}
+{ CONCAT; BEGIN INITIAL;yylval.string=strdup(str);return STR_CONST;}
 	YY_BREAK
 case 45:
 /* rule 45 can match eol */
@@ -1156,7 +1156,7 @@ case 50:
 /* rule 50 can match eol */
 YY_RULE_SETUP
 #line 111 "compiler_hw2.l"
-{ CONCAT;}
+{ CONCAT;printf("%d: ", yylineno+1);}
 	YY_BREAK
 case 51:
 YY_RULE_SETUP
@@ -1190,7 +1190,7 @@ case 56:
 /* rule 56 can match eol */
 YY_RULE_SETUP
 #line 124 "compiler_hw2.l"
-{CONCAT; CLEAR;}
+{CONCAT; printf("%d: ", yylineno+1);CLEAR;}
 	YY_BREAK
 case 57:
 YY_RULE_SETUP

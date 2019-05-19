@@ -1,9 +1,11 @@
 void func(bool a, int b, float c){
-	int hi = 5+3;
-	int two;
+	a = 5+3;
 }
 
 void main(){
-	int y;
+	int y = a;
+	while(y>3){
+		int x;
+	}
 	return 0;
 }
