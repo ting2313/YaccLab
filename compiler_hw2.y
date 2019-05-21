@@ -418,6 +418,7 @@ void dump_symbol() {
     }
     /*find the row of the biggest scope*/
     while(1){
+        char compare[32] = {};
         if(print->scope==max_scope){
             if(flag==1){
                 tail->next = NULL;
@@ -425,7 +426,7 @@ void dump_symbol() {
             }else if (flag==0){
                 tail = NULL;
             }
-            printf("%-10d%-10s%-12s%-10s%-10d%-10s\n",
+            printf("%-10d%-10s%-12s%-10s%-10d%s\n",
                 index, print->name, print->entry_type,\
                 print->data_type, print->scope, print->argu_type);
             print = print->next;
