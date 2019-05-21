@@ -124,7 +124,7 @@ id			{letter}+({letter}|{digit})*
 [\n]        {CONCAT; printf("%d: ", yylineno+1);CLEAR;}
 [ \t]		{CONCAT; } /* Ignore */
 [^ \t\n] 	{CONCAT; } /* Ignore other charactor sets */
-<<EOF>>     {dump_symbol();return 0;}
+<<EOF>>     {printf("\r       ");dump_symbol();return 0;}
 
 %%
 

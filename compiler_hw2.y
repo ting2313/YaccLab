@@ -16,6 +16,7 @@ void create_symbol();
 void insert_symbol();
 void dump_symbol();
 void print_symbol();
+void insert_list();
 void test();
 
 struct row{
@@ -27,7 +28,7 @@ struct row{
     struct row* next;
 };
 typedef struct row* rowptr;
-rowptr head,tail,new_func,new_argu;
+rowptr head,tail,new_func,new_argu, list_head, list_tail;
 
 %}
 
@@ -90,30 +91,40 @@ func_def
 
 arguments
     : type ID arguments{
-        sprintf(new_argu->name, "%s", $2);
-        sprintf(new_argu->data_type, "%s", $1);
-        sprintf(new_argu->entry_type, "parameter");
-        new_argu->scope = max_scope+1;
-        insert_symbol(new_argu);
+        rowptr new = malloc(sizeof(struct row));
+        new->next = NULL;
+        sprintf(new->name, "%s", $2);
+        sprintf(new->data_type, "%s", $1);
+        sprintf(new->entry_type, "parameter");
+        new->scope = max_scope+1;
 
         if(!strcmp(new_func->argu_type,"")){
+            list_head = list_tail = new;
             sprintf(new_func->argu_type, "%s", $1);
         }else{
+            list_tail->next = new;
+            list_tail = new;
             char temp[32] = {};
             strcpy(temp, new_func->argu_type);
             sprintf(new_func->argu_type, "%s%s", $1, temp);
         }
+
+        insert_list();
     }
     | COMMA type ID arguments{
-        sprintf(new_argu->name, "%s", $3);
-        sprintf(new_argu->data_type, "%s", $2);
-        sprintf(new_argu->entry_type, "parameter");
-        new_argu->scope = max_scope+1;
-        insert_symbol(new_argu);
+        rowptr new = malloc(sizeof(struct row));
+        new->next = NULL;
+        sprintf(new->name, "%s", $3);
+        sprintf(new->data_type, "%s", $2);
+        sprintf(new->entry_type, "parameter");
+        new->scope = max_scope+1;
 
         if(!strcmp(new_func->argu_type,"")){
+            list_head = list_tail = new;
             sprintf(new_func->argu_type, ", %s", $2);
         }else{
+            list_tail->next = new;
+            list_tail = new;
             char temp[32] = {};
             strcpy(temp, new_func->argu_type);
             sprintf(new_func->argu_type, ", %s%s", $2, temp);
@@ -323,7 +334,7 @@ void yyerror(char *s)
 void create_symbol() {
     new_func = malloc(sizeof(struct row));
     new_argu = malloc(sizeof(struct row));
-    head = tail = NULL;
+    head = tail = list_tail = list_head = NULL;
     max_scope = 0;
 }
 
@@ -344,6 +355,30 @@ void insert_symbol(rowptr new){
     bzero(new, sizeof(new));
 }
 
+void insert_list(){
+    rowptr target, pro;
+    pro = target = list_head;
+    while(1){
+        while(pro->next){
+            pro = pro->next;
+            if(pro==tail){
+                break;
+            }
+            target = pro;
+        }
+        if(head==NULL){
+            head = tail = target;
+            target->next = NULL;
+        }else{
+            tail->next = target;
+            tail = target;
+            tail->next = NULL;
+        }
+        pro = target = list_head;
+        if(target->next==NULL)    break;
+    }
+    list_tail = list_head = NULL;
+}
 
 /*1: in table  0:not in table*/
 int lookup_symbol(char* name, char* type) {
