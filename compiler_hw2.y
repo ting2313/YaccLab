@@ -245,6 +245,7 @@ equal_rhs
 value
     : I_CONST
     | F_CONST
+    | STR_CONST
     | value after_value
     | LB value RB
     | ID function_call{
