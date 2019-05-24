@@ -81,6 +81,7 @@ external_stat
 
 func_def
     : type ID LB arguments RB compound_stat{
+        if(!strcmp($6, "pre")) {max_scope++;dump_symbol();}
         sprintf(new_func->data_type, "%s", $1);
         sprintf(new_func->entry_type, "function");
         sprintf(new_func->name, "%s", $2);
@@ -186,6 +187,7 @@ stat
 
 else_scope
     : ELSE compound_stat
+    | ELSE IF  LB condition RB compound_stat else_scope
     |
 ;
 
@@ -245,6 +247,7 @@ equal_rhs
 value
     : I_CONST
     | F_CONST
+    | '-' value
     | STR_CONST
     | value after_value
     | LB value RB
