@@ -25,6 +25,7 @@ struct row{
     char data_type[10]; // a type(int,float,bool,string and void)
     int scope;
     char argu_type[32];
+    int define;     // if defined, define = 1; else define = 0
     struct row* next;
 };
 typedef struct row* rowptr;
@@ -81,12 +82,30 @@ external_stat
 
 func_def
     : type ID LB arguments RB compound_stat{
-        if(!strcmp($6, "pre")) {max_scope++;dump_symbol();}
-        sprintf(new_func->data_type, "%s", $1);
-        sprintf(new_func->entry_type, "function");
-        sprintf(new_func->name, "%s", $2);
-        new_func->scope = 0;
-        insert_symbol(new_func);
+        if(!strcmp($6, "pre")) {
+            max_scope++;dump_symbol();
+        }
+        int ID_state = lookup_symbol($2, "function");
+        if(ID_state==1){
+            // Redeclared
+            char mesg[20] = {};
+            sprintf(mesg,"Redeclared function %s", $2);
+            yyerror(mesg);
+        }else if(ID_state==-1){
+            // Already Predeclared
+        }else{
+            // Add
+            sprintf(new_func->data_type, "%s", $1);
+            sprintf(new_func->entry_type, "function");
+            sprintf(new_func->name, "%s", $2);
+            if(!strcmp($6, "pre")){
+                new_func->define = 0;
+            }else{
+                new_func->define = 1;
+            }
+            new_func->scope = 0;
+            insert_symbol(new_func);
+        }
     }
 ;
 
@@ -384,14 +403,19 @@ void insert_list(){
     list_tail = list_head = NULL;
 }
 
-/*1: in table  0:not in table*/
+/*1: in table  0:not in table  -1:in table but not define*/
 int lookup_symbol(char* name, char* type) {
     if(head==NULL)  return 0;
     rowptr point = head;
     while(point!=NULL){
         if(!strcmp(point->entry_type, type)){
             if(!strcmp(point->name, name)){
-                return 1;
+                if(point->define){
+                    return 1;
+                }else{
+                    point->define = 1;
+                    return -1;
+                }
             }
         }
         point = point->next;
@@ -400,6 +424,7 @@ int lookup_symbol(char* name, char* type) {
 }
 
 void dump_symbol() {
+
     if(head==NULL) {
         //printf("Table is empty.\n");
         return;  //no need to dump
@@ -437,7 +462,6 @@ void dump_symbol() {
             pre = print;
             index++;
             if(print==NULL) break;
-
         }else{
             tail = print;
             pre = print = print->next;
