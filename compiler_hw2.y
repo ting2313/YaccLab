@@ -17,7 +17,6 @@ void insert_symbol();
 void dump_symbol();
 void print_symbol();
 void insert_list();
-void test();
 
 struct row{
     char name[10];
@@ -29,6 +28,7 @@ struct row{
     struct row* next;
 };
 typedef struct row* rowptr;
+int donot_print;
 rowptr head,tail,new_func,new_argu, list_head, list_tail;
 
 %}
@@ -83,7 +83,9 @@ external_stat
 func_def
     : type ID LB arguments RB compound_stat{
         if(!strcmp($6, "pre")) {
-            max_scope++;dump_symbol();
+            max_scope++;
+            donot_print = 1;
+            dump_symbol();
         }
         int ID_state = lookup_symbol($2, "function");
         if(ID_state==1){
@@ -332,6 +334,7 @@ type
 int main(int argc, char** argv)
 {
     yylineno = 0;
+    donot_print = 0;
     printf("%d: ", yylineno+1);
     create_symbol();
     yyparse();
@@ -340,10 +343,6 @@ int main(int argc, char** argv)
     free(new_argu);
 
     return 0;
-}
-
-void test(){
-    printf("Testing table.\n");
 }
 
 void yyerror(char *s)
@@ -434,9 +433,12 @@ void dump_symbol() {
         max_scope--;
         return;
     }
-
-    printf("\n\n%-10s%-10s%-12s%-10s%-10s%-10s\n\n",
-        "Index", "Name", "Kind", "Type", "Scope", "Attribute");
+    int flag_print = donot_print;
+    donot_print = 0;
+    if(!flag_print){
+        printf("\n\n%-10s%-10s%-12s%-10s%-10s%-10s\n\n",
+            "Index", "Name", "Kind", "Type", "Scope", "Attribute");
+    }
     rowptr print = head;
     rowptr pre = print;
     int index = 0;
@@ -454,9 +456,11 @@ void dump_symbol() {
             }else if (flag==0){
                 tail = NULL;
             }
-            printf("%-10d%-10s%-12s%-10s%-10d%s\n",
-                index, print->name, print->entry_type,\
-                print->data_type, print->scope, print->argu_type);
+            if(!flag_print){
+                printf("%-10d%-10s%-12s%-10s%-10d%s\n",
+                    index, print->name, print->entry_type,\
+                    print->data_type, print->scope, print->argu_type);
+            }
             print = print->next;
             free(pre);
             pre = print;
